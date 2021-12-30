@@ -59,6 +59,7 @@ class OAuth2Adapter(object):
     def parse_token(self, data):
         token = SocialToken(token=data["access_token"])
         token.token_secret = data.get("refresh_token", "")
+        token.id_token = data.get("id_token", "")
         expires_in = data.get(self.expires_in_key, None)
         if expires_in:
             token.expires_at = timezone.now() + timedelta(seconds=int(expires_in))

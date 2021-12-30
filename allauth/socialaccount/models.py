@@ -147,6 +147,11 @@ class SocialToken(models.Model):
         verbose_name=_("token secret"),
         help_text=_('"oauth_token_secret" (OAuth1) or refresh token (OAuth2)'),
     )
+    id_token = models.TextField(
+        blank=True, null=True,
+        verbose_name=_("id token"),
+        help_text=_('"id_token" OIDC identity token or JWT with scopes'),
+    )
     expires_at = models.DateTimeField(
         blank=True, null=True, verbose_name=_("expires at")
     )
@@ -284,6 +289,8 @@ class SocialLogin(object):
                         # only update the refresh token if we got one
                         # many oauth2 providers do not resend the refresh token
                         t.token_secret = self.token.token_secret
+                    if self.token.id_token:
+                        t.id_token = self.token.id_token
                     t.expires_at = self.token.expires_at
                     t.save()
                     self.token = t
